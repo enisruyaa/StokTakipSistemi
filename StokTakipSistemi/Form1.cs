@@ -80,5 +80,13 @@ namespace StokTakipSistemi
             }
 
         }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
+            lstUrunler.SelectedIndex = -1;
+            txtAd.Text = " ";
+            txtFiyat.Text = "";
+            txtStok.Text = " ";
+        }
     }
 }

@@ -130,6 +130,7 @@
             this.btnTemizle.TabIndex = 22;
             this.btnTemizle.Text = "Seçim Temizle";
             this.btnTemizle.UseVisualStyleBackColor = true;
+            this.btnTemizle.Click += new System.EventHandler(this.btnTemizle_Click);
             // 
             // label4
             // 
