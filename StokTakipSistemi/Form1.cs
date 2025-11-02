@@ -27,6 +27,7 @@ namespace StokTakipSistemi
         public void UrunleriListele()
         {
             lstUrunler.DataSource = _db.Products.ToList();
+            SecimTemizle();
         }
 
         private void lstUrunler_SelectedIndexChanged(object sender, EventArgs e)
@@ -87,6 +88,59 @@ namespace StokTakipSistemi
             txtAd.Text = " ";
             txtFiyat.Text = "";
             txtStok.Text = " ";
+        }
+
+        public void SecimTemizle()
+        {
+            lstUrunler.SelectedIndex = -1;
+            txtAd.Text = " ";
+            txtFiyat.Text = "";
+            txtStok.Text = " ";
+        }
+
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (lstUrunler.SelectedIndex < 0)
+            {
+                MessageBox.Show("Lütfen Silmek İstediğiniz Ürünü Seçin");
+                return;
+            }
+            else
+            {
+                Product secilenUrun = (Product)lstUrunler.SelectedItem;
+                _db.Products.Remove(secilenUrun);
+                _db.SaveChanges();
+                UrunleriListele();
+            }
+        }
+
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            if (lstUrunler.SelectedIndex < 0)
+            {
+                MessageBox.Show("Lütfen Güncellemek İstediğiniz Ürünü Seçiniz");
+                return;
+            }
+            else
+            {
+                Product secilenUrun = (Product)lstUrunler.SelectedItem;
+                string yeniAd = txtAd.Text;
+                decimal yeniFiyat = Convert.ToDecimal(txtFiyat.Text);
+                int yeniStok = Convert.ToInt32(txtStok.Text);
+                if (string.IsNullOrEmpty(yeniAd))
+                {
+                    MessageBox.Show("Lütfen Güncellemek İstediğiniz Ürün İçin Bilgilerinizi Doldurunuz");
+                    return;
+                }
+                else
+                {
+                    secilenUrun.Name = yeniAd;
+                    secilenUrun.Price = yeniFiyat;
+                    secilenUrun.StockQuantity = yeniStok;
+                    _db.SaveChanges();
+                    UrunleriListele();
+                }
+            }
         }
     }
 }

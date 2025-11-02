@@ -109,6 +109,7 @@
             this.btnSil.TabIndex = 6;
             this.btnSil.Text = "Ürün Sil";
             this.btnSil.UseVisualStyleBackColor = true;
+            this.btnSil.Click += new System.EventHandler(this.btnSil_Click);
             // 
             // btnGuncelle
             // 
@@ -116,10 +117,11 @@
             this.btnGuncelle.ForeColor = System.Drawing.Color.Gray;
             this.btnGuncelle.Location = new System.Drawing.Point(110, 293);
             this.btnGuncelle.Name = "btnGuncelle";
-            this.btnGuncelle.Size = new System.Drawing.Size(135, 40);
+            this.btnGuncelle.Size = new System.Drawing.Size(135, 74);
             this.btnGuncelle.TabIndex = 6;
             this.btnGuncelle.Text = "Ürün Güncelle";
             this.btnGuncelle.UseVisualStyleBackColor = true;
+            this.btnGuncelle.Click += new System.EventHandler(this.btnGuncelle_Click);
             // 
             // btnTemizle
             // 
