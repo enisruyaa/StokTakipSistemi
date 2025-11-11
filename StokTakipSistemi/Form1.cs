@@ -22,7 +22,41 @@ namespace StokTakipSistemi
             _db = DBTool.DBInstance;
             UrunleriListele();
             lstUrunler.SelectedIndex = -1;
+            lstUrunler.DrawMode = DrawMode.OwnerDrawFixed;
+            lstUrunler.DrawItem += LstUrunler_DrawItem;
         }
+
+        private void LstUrunler_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+
+            // Ürünü al
+            var product = (Product)lstUrunler.Items[e.Index];
+
+            // Renk seç
+            Color textColor;
+            switch (product.StockStatus)
+            {
+                case "Low":
+                    textColor = Color.Red;
+                    break;
+                case "Medium":
+                    textColor = Color.DarkOrange;
+                    break;
+                default:
+                    textColor = Color.Black;
+                    break;
+            }
+
+            // Arka plan ve metin çizimi
+            e.DrawBackground();
+            using (Brush brush = new SolidBrush(textColor))
+            {
+                e.Graphics.DrawString(product.ToString(), e.Font, brush, e.Bounds);
+            }
+            e.DrawFocusRectangle();
+        }
+
 
         public void UrunleriListele()
         {
