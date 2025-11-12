@@ -21,7 +21,6 @@ namespace StokTakipSistemi
             InitializeComponent();
             _db = DBTool.DBInstance;
             UrunleriListele();
-            lstUrunler.SelectedIndex = -1;
             lstUrunler.DrawMode = DrawMode.OwnerDrawFixed;
             lstUrunler.DrawItem += LstUrunler_DrawItem;
         }
