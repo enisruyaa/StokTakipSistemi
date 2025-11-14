@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StokTakipSistemi.Models.Entities
 {
@@ -18,8 +19,10 @@ namespace StokTakipSistemi.Models.Entities
 
         // Relational Properties
 
-        public ICollection<Product> Products { get; set; }
+        public Order Order { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public Product Product { get; set; }
+
+
     }
 }

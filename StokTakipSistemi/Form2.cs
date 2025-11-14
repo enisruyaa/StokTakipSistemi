@@ -23,6 +23,7 @@ namespace StokTakipSistemi
             _db = DBTool.DBInstance;
             UrunleriListele();
             SiparisleriListele();
+
         }
 
         public void UrunleriListele()
@@ -34,9 +35,13 @@ namespace StokTakipSistemi
 
         public void SiparisleriListele()
         {
-            lstsSiparisler.DataSource = _db.Orders.ToList();
+            lstsSiparisler.DataSource =
+     _db.Orders
+        .Include("OrderDetails.Product")
+        .ToList();
             lstsSiparisler.DisplayMember = "";
             SecimTemizle();
+
         }
 
         public void SecimTemizle()
@@ -47,42 +52,64 @@ namespace StokTakipSistemi
 
         private void btnEkle_Click(object sender, EventArgs e)
         {
-            
-            int UrunId = Convert.ToInt32(cmbUrunler.SelectedValue); // Seçilen Ürünün İD'sini alma        
-            Product urun = _db.Products.FirstOrDefault(p => p.ID == UrunId);// Veri Tabanından Ürün Bulmak
-            int adet = (int)numAdet.Value; // Numericten seçilen adet
             if (cmbUrunler.SelectedValue == null)
             {
-                MessageBox.Show("Lütfen Bir Ürün Seçiniz");
-            }
-            else if (adet <=0)
-            {
-                MessageBox.Show("Lütfen Geçerli Bir Adet Giriniz");
-            }
-            else if (urun == null)
-            {
-                MessageBox.Show("Secilen Ürün Bulunamadı");
-            }
-            // Stok Kontrol 
-            else if (urun.StockQuantity <= adet)
-            {
-                MessageBox.Show($" {urun.Name} Ürününden Yeterli Stok Bulunmamaktadır. \r Maximum {urun.StockQuantity} Kadar Sipariş Verebilirsiniz. ");
+                MessageBox.Show("Lütfen bir ürün seçiniz.");
                 return;
             }
-            else
+
+            int urunId = Convert.ToInt32(cmbUrunler.SelectedValue);
+            int adet = (int)numAdet.Value;
+
+            Product urun = _db.Products.FirstOrDefault(x => x.ID == urunId);
+
+            if (adet <= 0)
             {
-                Order siparis = new Order
-                {
-                    OrderDate = DateTime.Now,
-                    TotalAmount = urun.Price,
-                    Products = new List<Product>() { urun }
-                };
-                urun.StockQuantity -= adet; // Stoktan Düşmek
-                _db.Orders.Add(siparis);
-                _db.SaveChanges();
-                lstsSiparisler.Items.Add($"{adet} Adet -> {urun.Name} Siparis Verilmiştir. ");
-                SiparisleriListele();
+                MessageBox.Show("Lütfen geçerli bir adet giriniz.");
+                return;
             }
+
+            if (urun == null)
+            {
+                MessageBox.Show("Seçilen ürün bulunamadı.");
+                return;
+            }
+
+            if (urun.StockQuantity < adet)
+            {
+                MessageBox.Show($"Stok yetersiz! Maksimum {urun.StockQuantity} adet sipariş verebilirsiniz.");
+                return;
+            }
+
+            // 1) Order oluştur
+            Order order = new Order
+            {
+                OrderDate = DateTime.Now
+            };
+            _db.Orders.Add(order);
+            _db.SaveChanges(); // ID almak için
+
+            // 2) OrderDetail oluştur
+            OrderDetail detail = new OrderDetail
+            {
+                OrderID = order.ID,
+                ProductID = urun.ID,
+                Quantity = adet,
+                UnitPrice = urun.Price
+            };
+
+            _db.OrderDetails.Add(detail);
+
+            // 3) Stok düş
+            urun.StockQuantity -= adet;
+
+            // 4) Kayıt
+            _db.SaveChanges();
+
+            // 5) Listbox'a yazdır
+            lstsSiparisler.DataSource = null;
+            lstsSiparisler.Items.Add($"{adet} Adet  {urun.Name} Ürünü Sipariş Edilmiştir. ");
         }
+
     }
 }

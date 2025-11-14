@@ -14,21 +14,17 @@ namespace StokTakipSistemi.Models.Entities
 
         // Relational Properties
 
-        public ICollection<Product> Products { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
 
         public override string ToString()
         {
-            // Products null değilse ve içinde ürün varsa, ilk ürünü al
-            Product product = Products?.FirstOrDefault();
+            if (OrderDetails == null || !OrderDetails.Any())
+                return "Siparişte ürün yok";
 
-            if (product != null)
-            {
-                return $" {product.StockQuantity} Adet {product.Name} Sipariş Edilmiştir.";
-            }
-            else
-            {
-                return $"{OrderDate:dd.MM.yyyy} - Ürün bilgisi bulunamadı";
-            }
+            var detailStrings = OrderDetails
+                .Select(od => $"{od.Product.Name} Ürününden --> {od.Quantity} Adet Sipariş Edilmiştir.");
+
+            return string.Join(", ", detailStrings);
         }
     }
 }

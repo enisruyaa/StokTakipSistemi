@@ -26,16 +26,13 @@ namespace StokTakipSistemi.Models.Entities
 
         public override string ToString()
         {
-            string urunAdlari = Orders != null && Orders.Any()
-        ? string.Join(" | ", Orders.Select(m => m.TotalAmount))
-        : "Ürün Yok";
             string result = $"{Name} Ürününün Fiyatı :{Price}   Stok Miktarı -> {StockQuantity} ";
             return result;
         }
 
         // Relational Properties
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
 
     }
 }
