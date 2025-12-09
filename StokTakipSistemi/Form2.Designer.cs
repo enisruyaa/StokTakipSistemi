@@ -38,16 +38,19 @@
             this.btnTemizle = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.lstsSiparisler = new System.Windows.Forms.ListBox();
+            this.lblStok = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numAdet)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbUrunler
             // 
             this.cmbUrunler.FormattingEnabled = true;
-            this.cmbUrunler.Location = new System.Drawing.Point(52, 127);
+            this.cmbUrunler.Location = new System.Drawing.Point(12, 127);
             this.cmbUrunler.Name = "cmbUrunler";
-            this.cmbUrunler.Size = new System.Drawing.Size(222, 21);
+            this.cmbUrunler.Size = new System.Drawing.Size(350, 21);
             this.cmbUrunler.TabIndex = 0;
+            this.cmbUrunler.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.cmbUrunler_DrawItem);
+            this.cmbUrunler.SelectedIndexChanged += new System.EventHandler(this.cmbUrunler_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -88,6 +91,7 @@
             this.btnGuncelle.TabIndex = 7;
             this.btnGuncelle.Text = "Siparis Güncelle";
             this.btnGuncelle.UseVisualStyleBackColor = true;
+            this.btnGuncelle.Click += new System.EventHandler(this.btnGuncelle_Click);
             // 
             // btnSil
             // 
@@ -99,6 +103,7 @@
             this.btnSil.TabIndex = 8;
             this.btnSil.Text = "Siparis Sil";
             this.btnSil.UseVisualStyleBackColor = true;
+            this.btnSil.Click += new System.EventHandler(this.btnSil_Click);
             // 
             // btnEkle
             // 
@@ -121,6 +126,7 @@
             this.btnTemizle.TabIndex = 25;
             this.btnTemizle.Text = "Seçim Temizle";
             this.btnTemizle.UseVisualStyleBackColor = true;
+            this.btnTemizle.Click += new System.EventHandler(this.btnTemizle_Click);
             // 
             // label4
             // 
@@ -141,12 +147,25 @@
             this.lstsSiparisler.Size = new System.Drawing.Size(358, 355);
             this.lstsSiparisler.TabIndex = 23;
             // 
+            // lblStok
+            // 
+            this.lblStok.AutoSize = true;
+            this.lblStok.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.lblStok.ForeColor = System.Drawing.Color.White;
+            this.lblStok.Location = new System.Drawing.Point(291, 83);
+            this.lblStok.Name = "lblStok";
+            this.lblStok.Size = new System.Drawing.Size(0, 17);
+            this.lblStok.TabIndex = 26;
+            this.lblStok.UseMnemonic = false;
+            this.lblStok.Visible = false;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lblStok);
             this.Controls.Add(this.btnTemizle);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lstsSiparisler);
@@ -177,5 +196,6 @@
         private System.Windows.Forms.Button btnTemizle;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ListBox lstsSiparisler;
+        private System.Windows.Forms.Label lblStok;
     }
 }

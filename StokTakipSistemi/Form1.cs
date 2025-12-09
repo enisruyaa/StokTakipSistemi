@@ -29,10 +29,7 @@ namespace StokTakipSistemi
         {
             if (e.Index < 0) return;
 
-            // Ürünü al
-            var product = (Product)lstUrunler.Items[e.Index];
-
-            // Renk seç
+            Product product = (Product)lstUrunler.Items[e.Index];
             Color textColor;
             switch (product.StockStatus)
             {
@@ -46,8 +43,6 @@ namespace StokTakipSistemi
                     textColor = Color.Black;
                     break;
             }
-
-            // Arka plan ve metin çizimi
             e.DrawBackground();
             using (Brush brush = new SolidBrush(textColor))
             {

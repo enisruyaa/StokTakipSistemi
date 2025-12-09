@@ -23,6 +23,8 @@ namespace StokTakipSistemi
             _db = DBTool.DBInstance;
             UrunleriListele();
             SiparisleriListele();
+            cmbUrunler.DrawMode = DrawMode.OwnerDrawFixed;
+            cmbUrunler.DrawItem += cmbUrunler_DrawItem;
 
         }
 
@@ -36,12 +38,11 @@ namespace StokTakipSistemi
         public void SiparisleriListele()
         {
             lstsSiparisler.DataSource =
-     _db.Orders
+        _db.Orders
         .Include("OrderDetails.Product")
         .ToList();
             lstsSiparisler.DisplayMember = "";
             SecimTemizle();
-
         }
 
         public void SecimTemizle()
@@ -60,7 +61,6 @@ namespace StokTakipSistemi
 
             int urunId = Convert.ToInt32(cmbUrunler.SelectedValue);
             int adet = (int)numAdet.Value;
-
             Product urun = _db.Products.FirstOrDefault(x => x.ID == urunId);
 
             if (adet <= 0)
@@ -81,15 +81,13 @@ namespace StokTakipSistemi
                 return;
             }
 
-            // 1) Order oluştur
             Order order = new Order
             {
                 OrderDate = DateTime.Now
             };
             _db.Orders.Add(order);
-            _db.SaveChanges(); // ID almak için
+            _db.SaveChanges();
 
-            // 2) OrderDetail oluştur
             OrderDetail detail = new OrderDetail
             {
                 OrderID = order.ID,
@@ -99,17 +97,91 @@ namespace StokTakipSistemi
             };
 
             _db.OrderDetails.Add(detail);
-
-            // 3) Stok düş
             urun.StockQuantity -= adet;
-
-            // 4) Kayıt
             _db.SaveChanges();
-
-            // 5) Listbox'a yazdır
             lstsSiparisler.DataSource = null;
             lstsSiparisler.Items.Add($"{adet} Adet  {urun.Name} Ürünü Sipariş Edilmiştir. ");
+            SiparisleriListele();
         }
 
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            if (lstsSiparisler.SelectedItem == null)
+            {
+                MessageBox.Show("Lütfen Silmek İstediğiniz Ürünü Seçiniz");
+                return;
+            }
+
+            Order siparis = (Order)lstsSiparisler.SelectedItem;
+            _db.Orders.Remove(siparis);
+            _db.SaveChanges();
+            SiparisleriListele();
+        }
+
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            if (lstsSiparisler.SelectedItem == null)
+            {
+                MessageBox.Show("Lütfen Güncellemek İstediğiniz Siparişi Seçiniz.");
+                return;
+            }
+
+
+            Order siparis = (Order)lstsSiparisler.SelectedItem;
+
+            siparis.OrderDetails.First().ProductID = ((Product)cmbUrunler.SelectedItem).ID;
+            siparis.OrderDetails.First().Quantity = (int)numAdet.Value;
+
+            _db.SaveChanges();
+            SiparisleriListele();
+        }
+
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
+            cmbUrunler.SelectedIndex = -1;
+            numAdet.Value = 0;
+            lstsSiparisler.ClearSelected();
+            SiparisleriListele();
+        }
+
+        private void cmbUrunler_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbUrunler.SelectedItem is Product urun)
+            {
+                lblStok.Text = $"Stok : {urun.StockQuantity}";
+                lblStok.Visible = true;
+            }
+            else
+            {
+                lblStok.Visible = false;
+            }
+        }
+
+        private void cmbUrunler_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+
+            Product product = (Product)cmbUrunler.Items[e.Index];
+            Color textColor;
+            switch (product.StockStatus)
+            {
+                case "Low":
+                    textColor = Color.Red;
+                    break;
+                case "Medium":
+                    textColor = Color.DarkOrange;
+                    break;
+                default:
+                    textColor = Color.Black;
+                    break;
+            }
+
+            e.DrawBackground();
+            using (Brush brush = new SolidBrush(textColor))
+            {
+                e.Graphics.DrawString(product.ToString(), e.Font, brush, e.Bounds);
+            }
+            e.DrawFocusRectangle();
+        }
     }
 }
